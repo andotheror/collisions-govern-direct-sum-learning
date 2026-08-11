@@ -1,0 +1,336 @@
+\documentclass[twoside]{article}
+\usepackage[preprint]{aistats2027}
+\usepackage[round,authoryear]{natbib}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{url}
+\renewcommand{\bibname}{References}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+\bibliographystyle{apalike}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\C}{\mathcal C}
+\newcommand{\Hh}{\mathcal H}
+\newcommand{\Ldim}{\operatorname{Ldim}}
+\newcommand{\Ndim}{\operatorname{Ndim}}
+\newcommand{\Gdim}{\operatorname{Gdim}}
+\newcommand{\DSdim}{\operatorname{DSdim}}
+\newcommand{\Risk}{\mathfrak R}
+\begin{document}
+\runningauthor{}
+\twocolumn[
+\aistatstitle{Collisions Govern Direct-Sum Learning}
+\aistatsauthor{Pahan Dewasurendra}
+\aistatsaddress{Johns Hopkins University}
+]
+\begin{abstract}
+Direct-sum learning asks how the cost of predicting $r$ outputs at once compares with learning one output. Even for finite classes and zero-one loss on the complete output vector, the answer was unknown. We prove a complete dichotomy. Call a class collision-free if every input assigns distinct labels to all distinct concepts. Every power of a collision-free class reduces exactly to mode estimation, regardless of $r$. Its agnostic and uniform-convergence curves are $\Theta(n^{-1/2})$, one realizable example identifies the full target, adversarial online regret is $\Theta(\sqrt T)$, and its Natarajan, graph, DS, and Littlestone dimensions all equal one. If one collision exists, two concepts agree at one input and differ at another. These two points embed $r$ independently addressable bits in the $r$th power. For every fixed finite class this forces agnostic and uniform rates $\Theta(\min\{1,\sqrt{r/n}\})$, realizable rate $\Theta(\min\{1,r/n\})$, online regret $\Theta(\min\{T,\sqrt{rT}\})$, and realizable mistake complexity $\Theta(r)$. We also show that the Natarajan dimension of every colliding power lies within a factor three of $r$ times the base dimension. The dichotomy subsumes the two examples in a recent rate separation and resolves the finite-class forms of several direct-sum questions. It also disproves a claimed additivity formula for multiclass Littlestone dimension. Powers of the two constant binary functions have dimension one, not $r$.
+\end{abstract}
+
+\section{Introduction}
+
+Suppose one example contains $r$ inputs and a learner must predict all $r$ labels correctly. The natural hypothesis class is the Cartesian power $\C^r$. Its loss is one if any coordinate is wrong. This is not the same as averaging $r$ coordinate losses. Learning the coordinates independently gives useful upper bounds in realizable and online settings, but relative quantities such as agnostic excess risk and uniform convergence do not decompose. \citet{hanneke2024open} therefore asked how the learning curves and combinatorial dimensions of $\C^r$ depend on those of $\C$.
+
+A recent answer shows that the single-task agnostic rate and $r$ do not determine the power rate. \citet{more2026} compare two binary classes. The two constant functions have rate $\Theta(n^{-1/2})$ both before and after taking powers. The zero function and identity also have one-task rate $\Theta(n^{-1/2})$, but their $r$th power has rate $\Theta(\min\{1,\sqrt{r/n}\})$. The examples establish distinct possibilities without identifying what separates them.
+
+This paper shows that one local property explains the entire finite-class landscape. A class is \emph{collision-free} when distinct concepts disagree at every input. Otherwise, a \emph{collision} is a pair of distinct concepts that agree somewhere. Since the concepts are distinct functions, they also disagree somewhere. These two points have opposite effects. Without a collision, the observed label at any input uniquely decodes a concept. A product label therefore decodes the complete vector of concepts in one shot. With a collision, use the agreement point as an anchor and activate the disagreement point in one coordinate at a time. This realizes a full $r$-bit cube.
+
+\begin{table}[t]
+\caption{Minimax orders for a fixed finite class $\C$ with $|\C|\geq2$. Constants may depend on $\C$.}
+\label{tab:dichotomy}
+\centering
+\small
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{p{0.34\columnwidth}p{0.26\columnwidth}p{0.29\columnwidth}}
+\toprule
+Quantity & Collision-free & Has a collision \\
+\midrule
+Agnostic, uniform & $n^{-1/2}$ & $1\wedge\sqrt{r/n}$ \\
+Realizable batch & $0$ after one sample & $1\wedge r/n$ \\
+Online regret & $\sqrt T$ & $T\wedge\sqrt{rT}$ \\
+Online mistakes & $1$ & $r$ \\
+Four dimensions & $1$ & $r$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:dichotomy} summarizes the resulting dichotomy. It simultaneously covers agnostic learning, realizable learning, empirical uniform convergence, adversarial online regret, realizable online mistakes, and four standard dimensions. All orders hold uniformly in $n,r,T\geq1$. The collision cube supplies the lower bounds, while finite-class algorithms supply matching upper bounds up to constants depending only on the fixed base class.
+
+The online result also corrects a prior structural claim. Proposition 39 of \citet{hanneke2024list}, restated as Proposition 2 of \citet{hanneke2024open}, claims
+\begin{equation}
+ \Ldim(\mathcal F\otimes\mathcal G)=\Ldim(\mathcal F)+\Ldim(\mathcal G).
+ \label{eq:claimed-additivity}
+\end{equation}
+Take the two constant binary functions. Their Littlestone dimension is one. Every member of the product is a distinct constant label in $\{0,1\}^2$, so one observed label identifies the target and the product dimension remains one. The proposed lower-bound tree fails because an edge label in its first stage contains the second component and can reveal the future second-stage branch. The additive upper bound is valid. Our dichotomy gives the correct behavior of all finite-class powers.
+
+\paragraph{Contributions.} First, we identify the collision criterion and prove the simultaneous statistical and online dichotomy in Table~\ref{tab:dichotomy}. Second, we give explicit bounds in the base-class size, with lower bounds valid for improper learners. Third, if $d=\Ndim(\C)$ and $\C$ has a collision, we prove
+\begin{equation}
+ \frac{rd}{3}\leq \Ndim(\C^r)\leq rd.
+ \label{eq:natarajan-factor}
+\end{equation}
+This closes the degeneration of the prior lower bound when $d\leq2$. Fourth, for heterogeneous products we show that collision-free factors disappear from the batch rates and exactly from Natarajan and DS dimensions. Fifth, we disprove \eqref{eq:claimed-additivity} and replace it for finite powers by a one-versus-linear Littlestone dichotomy. All proofs are self-contained in the supplement apart from standard concentration, Assouad, and online optimization facts.
+
+\paragraph{Related work.} \citet{hanneke2024list,hanneke2024open} initiated direct-sum questions for PAC and list learning. They prove
+\begin{align*}
+ \Ndim(\mathcal F)+\Ndim(\mathcal G)-2
+ &\leq \Ndim(\mathcal F\otimes\mathcal G)\\
+ &\leq \Ndim(\mathcal F)+\Ndim(\mathcal G),
+\end{align*}
+and give lower bounds for DS dimensions. Their Natarajan inequalities are valid and are one ingredient in \eqref{eq:natarajan-factor}. Their Littlestone lower bound is not. \citet{more2026} give the two agnostic endpoint examples described above. Our theorem subsumes both, characterizes every finite base class, and covers four additional learning and dimension regimes. General multiclass sample complexity is controlled by DS and Natarajan dimensions \citep{brukhim2022,cohen2025,pabbaraju2026}. Those results do not determine how powers behave. \citet{suruga2024} studies direct sums in a broad oracle framework, under a different coordinatewise success criterion. \citet{holzman2026} study uniform estimation on product domains under distributional restrictions. We instead use unrestricted distributions and the zero-one loss classes induced by product predictors.
+
+\section{Setup}
+\label{sec:setup}
+
+Let $\C=\{c_1,\ldots,c_M\}\subseteq\mathcal Y^{\mathcal X}$ be a finite class of distinct functions on a nonempty domain, where $M\geq2$. Its $r$th Cartesian power is
+\[
+ \C^r=\{c_{b_1}\otimes\cdots\otimes c_{b_r}:b\in[M]^r\}\subseteq(\mathcal Y^r)^{\mathcal X^r},
+\]
+where $h_b(x_1,\ldots,x_r)=(c_{b_1}(x_1),\ldots,c_{b_r}(x_r))$. The loss is $\ell(h,(x,y))=\mathbf1\{h(x)\neq y\}$, where inequality means that at least one coordinate differs.
+
+For a distribution $P$ on $\mathcal X^r\times\mathcal Y^r$, write $L_P(h)=\E_P\ell(h,Z)$ and $L_P(\C^r)=\min_{h\in\C^r}L_P(h)$. The expected agnostic curve is
+\[
+ \epsilon_{\rm agn}(n\mid\C^r)=\inf_A\sup_P \E\bigl[L_P(A(S))-L_P(\C^r)\bigr],
+\]
+where $S\sim P^n$ and $A$ may be improper. The realizable curve $\epsilon_{\rm real}$ restricts the supremum to distributions labeled by some member of $\C^r$ and omits the zero comparator term. The uniform-convergence curve is
+\[
+ \epsilon_{\rm UC}(n\mid\C^r)=\sup_P\E\sup_{h\in\C^r}|L_P(h)-L_S(h)|.
+\]
+
+In the online model, an adversary presents $x_t$, the learner predicts $\widehat y_t$, and then $y_t$ is revealed. The minimax expected regret is denoted $\Risk_T(\C^r)$ and compares cumulative zero-one loss with the best fixed member of $\C^r$. The realizable mistake complexity equals the multiclass Littlestone dimension under the standard full-label protocol \citep{daniely2015}.
+
+\begin{definition}[Collision]
+The class $\C$ is collision-free if, for every $x\in\mathcal X$, the evaluation map $c\mapsto c(x)$ is injective on $\C$. Otherwise, $\C$ has a collision.
+\end{definition}
+
+For rates, $a\wedge b$ denotes $\min\{a,b\}$. Constants in $\Theta_{\C}(\cdot)$ may depend on the fixed base class, but not on $n,r$, or $T$.
+
+\section{The Structural Dichotomy}
+\label{sec:structure}
+
+The two branches follow from two elementary representations. In the collision-free branch, define a partial decoder $q:\mathcal X^r\times\mathcal Y^r\to[M]^r\cup\{\bot\}$. Set $q(x,y)=b$ when $c_{b_j}(x_j)=y_j$ for every $j$. Injectivity makes $b$ unique. If no such vector exists, set $q(x,y)=\bot$. Then
+\begin{equation}
+ \ell(h_b,(x,y))=\mathbf1\{q(x,y)\neq b\}.
+ \label{eq:decoder-loss}
+\end{equation}
+Thus the entire product class is a collection of complements of disjoint atoms.
+
+If a collision exists, choose $c_0\neq c_1$ and $a,b\in\mathcal X$ such that $c_0(a)=c_1(a)$ and $c_0(b)\neq c_1(b)$. For $j\in[r]$, let $u_j\in\mathcal X^r$ place $b$ in coordinate $j$ and $a$ elsewhere. On $u_j$, every hypothesis in $\{c_0,c_1\}^r$ has a label that depends only on its $j$th bit. Hence
+\begin{equation}
+ \{c_0,c_1\}^r\big|_{\{u_1,\ldots,u_r\}}
+ \quad\text{is a full binary cube.}
+ \label{eq:collision-cube}
+\end{equation}
+
+\begin{theorem}[Dimension dichotomy]
+\label{thm:dimensions}
+For every finite $\C$ with $M\geq2$ and every $r\geq1$:
+\begin{enumerate}
+\item If $\C$ is collision-free, then
+\begin{align*}
+ \Ndim(\C^r)=\Gdim(\C^r)&=1,\\
+ \DSdim(\C^r)=\Ldim(\C^r)&=1.
+\end{align*}
+\item If $\C$ has a collision, each of the four dimensions lies between $r$ and $r\log_2M$. Moreover,
+\begin{align*}
+ \frac{r\Ndim(\C)}{3}
+ &\leq\Ndim(\C^r)\leq r\Ndim(\C),\\
+ r&\leq\Ldim(\C^r)\leq r\Ldim(\C).
+\end{align*}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Suppose first that $\C$ is collision-free. If $h_s\neq h_t$, their index vectors differ in a coordinate $j$. Then $c_{s_j}(x_j)\neq c_{t_j}(x_j)$ for every $x_j$, so $h_s$ and $h_t$ disagree at every product input. Natarajan or graph shattering of two points would require distinct hypotheses that agree at one point. A two-dimensional DS pseudo-cube contains neighbors that differ at one restricted point and agree at the other. A depth-two Littlestone tree contains two hypotheses that agree on the root label and split below it. All four possibilities contradict everywhere disagreement. Nontriviality gives dimension one.
+
+Now suppose a collision exists. For each $\theta\in\{0,1\}^r$, let $h_\theta$ choose $c_{\theta_j}$ in coordinate $j$. Equation~\eqref{eq:collision-cube} says that $h_\theta(u_j)$ is one of two distinct labels and depends only on $\theta_j$. These labels Natarajan-shatter $u_1,\ldots,u_r$. They also give graph and DS shattering. Putting $u_j$ at every node of level $j$ gives a depth-$r$ Littlestone tree.
+
+Each Natarajan-shattered set, graph-shattered set, or depth-$d$ Littlestone tree needs at least $2^d$ hypotheses. The same is true of a $d$-dimensional DS pseudo-cube. To see this, partition it by its first label. Every nonempty fiber is a $(d-1)$-dimensional pseudo-cube, and the neighbor condition in coordinate one guarantees at least two fibers. Induction gives at least $2^d$ members. Since $|\C^r|=M^r$, every dimension is at most $r\log_2M$.
+
+Let $d=\Ndim(\C)$. Iterating the valid product inequalities of \citet{hanneke2024list} gives
+\[
+ r(d-2)+2\leq\Ndim(\C^r)\leq rd.
+\]
+For $d\geq3$, the lower bound is at least $rd/3$. For $d=1$ or $2$, the collision cube gives $r\geq rd/2$. Finally, run an optimal online learner for $\C$ in every coordinate. Every vector mistake contains a coordinate mistake, so there are at most $r\Ldim(\C)$ mistakes. The mistake-bound characterization of Littlestone dimension completes the proof.
+\end{proof}
+
+\begin{corollary}[Failure of Littlestone additivity]
+\label{cor:littlestone}
+Let $\mathcal K_q$ be the $q\geq2$ constant functions from any nonempty domain to $[q]$. Then $\Ldim(\mathcal K_q)=1$ and $\Ldim(\mathcal K_q^r)=1$ for every $r$. In particular, the additive equality \eqref{eq:claimed-additivity} is false.
+\end{corollary}
+
+This is not a convention about repeated inputs or coordinate losses. Under full-vector zero-one loss, the first revealed label of a realizable sequence identifies the complete constant vector. Appendix C of the supplement pinpoints the invalid step in the claimed tree concatenation.
+
+\begin{corollary}[Binary powers]
+\label{cor:binary}
+Let $\C\subseteq\{0,1\}^{\mathcal X}$ be finite and nontrivial. It is collision-free exactly when it consists of two pointwise complementary functions. Every other such class follows the linear branch of Theorem~\ref{thm:dimensions}.
+\end{corollary}
+
+Indeed, pointwise injectivity into a binary label set permits at most two concepts. If there are two, injectivity says that their labels differ everywhere. This shows that the two examples of \citet{more2026} represent the complete binary dichotomy, not only two convenient constructions.
+
+\section{Batch Learning Curves}
+\label{sec:batch}
+
+\begin{theorem}[Statistical collision dichotomy]
+\label{thm:batch}
+There are universal constants $c,C>0$ such that, for all $n,r\geq1$:
+\begin{enumerate}
+\item If $\C$ is collision-free, then
+\begin{align*}
+ \frac{c}{\sqrt n}&\leq\epsilon_{\rm agn}(n\mid\C^r)\leq\frac{2}{\sqrt n},\\
+ \frac{c}{\sqrt n}&\leq\epsilon_{\rm UC}(n\mid\C^r)\leq\frac{1}{\sqrt n},
+\end{align*}
+and $\epsilon_{\rm real}(n\mid\C^r)=0$.
+\item If $\C$ has a collision, then
+\begin{align*}
+ c\left(1\wedge\sqrt{\frac rn}\right)
+ &\leq\epsilon_{\rm agn}(n\mid\C^r)\\
+ &\leq C\left(1\wedge\sqrt{\frac{r\log(2M)}n}\right),
+\end{align*}
+the same bounds hold for $\epsilon_{\rm UC}$, and
+\begin{align*}
+ c\left(1\wedge\frac rn\right)
+ &\leq\epsilon_{\rm real}(n\mid\C^r)\\
+ &\leq C\left(1\wedge\frac{r\log(2M)}n\right).
+\end{align*}
+\end{enumerate}
+\end{theorem}
+
+The collision-free agnostic result is an exact reduction, not only a dimension argument. Let $p_b=\Pp(q(Z)=b)$ and let $\widehat p_b$ be its empirical frequency. Equation~\eqref{eq:decoder-loss} gives $L_P(h_b)=1-p_b$, so empirical risk minimization selects an empirical mode $\widehat b$. If $b^*$ is a population mode,
+\begin{align*}
+ p_{b^*}-p_{\widehat b}
+ &\leq2\|\widehat p-p\|_\infty
+ \leq2\|\widehat p-p\|_2,\\
+ \E\|\widehat p-p\|_2^2
+ &=\frac1n\sum_b p_b(1-p_b)\leq\frac1n.
+\end{align*}
+This proves the dimension-free upper bound even though $|\C^r|=M^r$. It also proves uniform convergence because the loss events are complements of the same disjoint atoms. Under realizability, one sample has $q(Z)$ equal to the target index vector and identifies it exactly.
+
+For the collision lower bound, the cube \eqref{eq:collision-cube} turns the problem into estimating $r$ weak bits. For $\theta\in\{-1,+1\}^r$, draw $J$ uniformly from $[r]$, set $X=u_J$, and choose between the two cube labels at $u_J$ with probabilities $1/2+\theta_J\alpha$ and $1/2-\theta_J\alpha$. The comparator $h_\theta$ attains Bayes risk $1/2-\alpha$. Decode $\widehat\theta_j=+1$ exactly when the learner predicts the positive cube label at $u_j$. A wrong bit contributes conditional excess at least $2\alpha$, hence
+\begin{equation}
+ L_{P_\theta}(A(S))-L_{P_\theta}(\C^r)
+ \geq \frac{2\alpha}{r}d_H(\widehat\theta,\theta).
+ \label{eq:main-hamming}
+\end{equation}
+Flipping coordinate $j$ changes only observations with $J=j$. The neighboring $n$-sample laws therefore have KL divergence at most $16n\alpha^2/r$. With $\alpha=(1/16)(1\wedge\sqrt{r/n})$, Pinsker's inequality bounds every neighboring total variation distance by $1/4$. Assouad's lemma \citep{tsybakov2009} gives $\sup_\theta\E d_H(\widehat\theta,\theta)\geq3r/8$. Substitution in \eqref{eq:main-hamming} proves the agnostic lower bound for every learner, including improper learners.
+
+The realizable lower bound uses the same inputs. Put probability $p$ on each $u_j$, the remaining mass on the all-anchor input, and a uniform prior on the target cube vertex. Observations at $u_k$ for $k\neq j$ evaluate coordinate $j$ at the agreement point, so they reveal nothing about bit $j$. An unseen $u_j$ therefore leaves that bit uniformly unknown. The Bayes test error is at least
+\[
+ \frac{rp}{2}(1-p)^n.
+\]
+Choosing $p=\min\{1/(2n),1/(2r)\}$ gives $(1/8)(1\wedge r/n)$. For uniform convergence, fix the negative cube label at each $u_j$ and use the uniform law on those $r$ labeled points. The restricted loss vectors are every subset of $[r]$. The expected supremum is the expected total variation distance between the empirical distribution and the uniform law on $r$ atoms, which is $\Omega(1\wedge\sqrt{r/n})$. Standard finite-class upper bounds \citep{devroye1996} with $|\C^r|=M^r$ complete the proof. Appendix D of the supplement gives the remaining constants.
+
+Theorem~\ref{thm:batch} classifies every fixed finite class. In particular, the constant and zero-identity examples of \citet{more2026} are not isolated constructions. They are the two unavoidable branches.
+
+\begin{corollary}[Single-task curves are insufficient]
+\label{cor:insufficient}
+Every fixed finite nontrivial class has one-task agnostic and uniform-convergence curves $\Theta(n^{-1/2})$. Nevertheless, its power curves can be dimension-free or grow as $\sqrt r$. Thus no function of either one-task curve and $r$ determines the corresponding direct-sum curve, even within finite classes. The same statement holds online because every one-task regret is $\Theta_{\C}(\sqrt T)$, while power regret can be independent of $r$ or grow as $\sqrt r$.
+\end{corollary}
+
+\section{Heterogeneous Products}
+\label{sec:heterogeneous}
+
+The mechanism extends beyond powers. Let $\C_1,\ldots,\C_r$ be finite nontrivial classes, with $M_j=|\C_j|$. Let $I$ index the factors that have a collision, set $s=|I|$, and define $B=\prod_{j\in I}M_j$, with $B=1$ when $I$ is empty. Write
+\[
+ \mathcal H=\bigotimes_{j=1}^r\C_j,
+ \qquad
+ \mathcal H_I=\bigotimes_{j\in I}\C_j.
+\]
+
+\begin{theorem}[Collision count]
+\label{thm:heterogeneous}
+There are universal $c,C>0$ with the following properties.
+\begin{enumerate}
+\item If $s=0$, the collision-free conclusions of Theorems~\ref{thm:dimensions} and \ref{thm:batch} hold for $\mathcal H$.
+\item If $s\geq1$, then
+\begin{align*}
+ c\left(1\wedge\sqrt{\frac sn}\right)
+ &\leq\epsilon_{\rm agn}(n\mid\mathcal H)\\
+ &\leq C\left(1\wedge\sqrt{\frac{\log(2B)}n}\right),
+\end{align*}
+the same bounds hold for $\epsilon_{\rm UC}$, and
+\begin{align*}
+ c\left(1\wedge\frac sn\right)
+ &\leq\epsilon_{\rm real}(n\mid\mathcal H)\\
+ &\leq C\left(1\wedge\frac{\log(2B)}n\right).
+\end{align*}
+\item For every $s$, the collision-free factors disappear exactly from two dimensions:
+\begin{align*}
+ \Ndim(\mathcal H)&=1\vee\Ndim(\mathcal H_I),\\
+ \DSdim(\mathcal H)&=1\vee\DSdim(\mathcal H_I).
+\end{align*}
+\end{enumerate}
+\end{theorem}
+
+If the colliding factors have uniformly bounded cardinality, then $\log B=\Theta(s)$, so the bounds are tight in $s$. The theorem says that adding any number of collision-free tasks is free up to the unavoidable one-dimensional mode-estimation term.
+
+\paragraph{Statistical proof.} Combine all collision-free factors into $\mathcal A$ and all colliding factors into $\mathcal B=\mathcal H_I$. The free block has a partial decoder $q_A$. A product hypothesis $(a,b)$ is correct exactly on
+\begin{equation}
+ \{q_A(z_A)=a\}\cap\{h_b(z_B)=y_B\}.
+ \label{eq:grouped-correct}
+\end{equation}
+These event classes occupy disjoint groups indexed by $a$. On a fixed sample, let $I_a$ be the observations in group $a$. For Rademacher signs $\sigma_i$, define
+\[
+ Z_a=\max_{b\in[B]}
+ \left|\sum_{i\in I_a}\sigma_i
+ \mathbf1\{h_b(x_{i,B})=y_{i,B}\}\right|.
+\]
+The finite-class maximal inequality and its subgaussian tail give $\E_\sigma Z_a^2\leq C|I_a|\log(2B)$. Since $\max_aZ_a\leq(\sum_aZ_a^2)^{1/2}$ and the groups partition at most $n$ observations,
+\[
+ \E_\sigma\max_a Z_a\leq C\sqrt{n\log(2B)}.
+\]
+Symmetrization of \eqref{eq:grouped-correct} proves the agnostic and uniform upper bounds without a term for the number of free factors. In the realizable case, one example decodes all free target indices. A consistent learner then pays only $(\log B+1)/n$ for the colliding block. Choosing one witness pair in every colliding factor gives the $s$-bit version of \eqref{eq:collision-cube}, so the earlier lower bounds apply with $s$ in place of $r$.
+
+\paragraph{Dimension proof.} The lower bound follows by fixing all free factors. For the reverse direction, consider a Natarajan-shattered set of size at least two. Hypotheses at adjacent vertices of its binary witness cube agree on at least one input. Their free components must be identical because distinct hypotheses in $\mathcal A$ disagree everywhere. Connectivity forces the same free component throughout the cube, leaving a Natarajan cube in $\mathcal H_I$. The DS argument is identical after restricting to a connected component of the pseudo-cube. Dimension one follows from nontriviality. Full details are in Appendix E of the supplement.
+
+\section{Online Learning Curves}
+\label{sec:online}
+
+The same local property controls adversarial sequences.
+
+\begin{theorem}[Online collision dichotomy]
+\label{thm:online}
+There are universal constants $c,C>0$ such that, for all $T,r\geq1$:
+\begin{enumerate}
+\item If $\C$ is collision-free, then
+\[
+ c\sqrt T\leq\Risk_T(\C^r)\leq\sqrt{2T},
+ \qquad \Ldim(\C^r)=1.
+\]
+\item If $\C$ has a collision, then
+\[
+ c\bigl(T\wedge\sqrt{rT}\bigr)
+ \leq\Risk_T(\C^r)
+ \leq C\bigl(T\wedge\sqrt{Tr\log(2M)}\bigr),
+\]
+and $r\leq\Ldim(\C^r)\leq r\Ldim(\C)$.
+\end{enumerate}
+\end{theorem}
+
+In the collision-free branch, valid outcomes decode to one index $q_t\in[M]^r$. Invalid outcomes make every product hypothesis lose and cancel from regret. On valid rounds, use Euclidean online gradient ascent over the simplex on $[M]^r$ with gain vector $e_{q_t}$. The simplex has Euclidean diameter at most $\sqrt2$ and every gain has norm one, yielding regret at most $\sqrt{2T}$ with no dependence on the number of hypotheses. Two decoded categories give the matching random-walk lower bound.
+
+For the collision branch, interleave $r'=\min\{r,T\}$ binary constant-prediction games on $u_1,\ldots,u_{r'}$. Independent fair labels give expected comparator advantage of order $r'\sqrt{T/r'}=T\wedge\sqrt{rT}$. Hedge over the $M^r$ product hypotheses gives the upper bound. The realizable mistake bounds follow from the collision tree and from running one optimal base learner per coordinate. See Appendix F of the supplement.
+
+The correction in Corollary~\ref{cor:littlestone} matters beyond a single example. The valid relation for arbitrary classes is the additive upper bound
+\[
+ \Ldim(\mathcal F\otimes\mathcal G)\leq\Ldim(\mathcal F)+\Ldim(\mathcal G).
+\]
+No matching additive lower bound is possible. For finite powers, Theorem~\ref{thm:online} replaces it with an exact qualitative classification and tight orders in $r$.
+
+\section{Discussion}
+
+One collision is enough to change every direct-sum regime. It creates an anchor that prevents inactive coordinates from revealing their bits. Without an anchor, every product label identifies the complete hypothesis vector and an exponentially large class behaves like a collection of disjoint atoms. This explains why single-task rates cannot predict power rates and why the separation is a dichotomy rather than a continuum for fixed finite classes.
+
+Our conclusions use zero-one loss on the full output vector, as posed in the direct-sum questions. Coordinatewise Hamming loss decomposes and has different rates. Finiteness is only needed for the upper bounds in the collision branch. The collision-free reductions and all collision lower bounds hold more broadly whenever the relevant decoders and minimax quantities are well defined. Extending the matching collision upper bounds to infinite classes and obtaining parameter-sharp online bounds for heterogeneous products are natural next questions.
+
+\bibliography{references}
+
+\clearpage
+\end{document}

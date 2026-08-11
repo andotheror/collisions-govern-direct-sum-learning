@@ -1,0 +1,309 @@
+\documentclass[twoside]{article}
+\usepackage[preprint]{aistats2027}
+\usepackage[round,authoryear]{natbib}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{url}
+\renewcommand{\bibname}{References}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+\bibliographystyle{apalike}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\C}{\mathcal C}
+\newcommand{\Ldim}{\operatorname{Ldim}}
+\newcommand{\Ndim}{\operatorname{Ndim}}
+\newcommand{\Gdim}{\operatorname{Gdim}}
+\newcommand{\DSdim}{\operatorname{DSdim}}
+\newcommand{\Risk}{\mathfrak R}
+\begin{document}
+\runningauthor{}
+\twocolumn[
+\aistatstitle{Supplement: Collisions Govern Direct-Sum Learning}
+\aistatsauthor{Pahan Dewasurendra}
+\aistatsaddress{Johns Hopkins University}
+]
+
+\appendix
+\section{Auxiliary Facts}
+\label{app:aux}
+
+We collect elementary facts used in the proofs. Throughout, $\C=\{c_1,\ldots,c_M\}\subseteq\mathcal Y^{\mathcal X}$ consists of distinct functions, $M\geq2$, and $\mathcal X$ is nonempty. All logarithms in finite-class bounds can be changed by universal constants.
+
+\begin{lemma}[Finite-class statistical bounds]
+\label{lem:finite}
+Let $\mathcal H$ be a finite zero-one loss class with $N\geq2$ elements. Then
+\begin{align*}
+ \epsilon_{\rm agn}(n\mid\mathcal H)&\leq 2\sqrt{\frac{2\log(2N)}{n}}\wedge1,\\
+ \epsilon_{\rm UC}(n\mid\mathcal H)&\leq \sqrt{\frac{2\log(2N)}{n}}\wedge1.
+\end{align*}
+If the distribution is realizable, a consistent learner satisfies
+\[
+ \E L_P(\widehat h)\leq\frac{\log N+1}{n}\wedge1.
+\]
+\end{lemma}
+
+\begin{proof}
+For the first two claims, Hoeffding's exponential-moment bound and the finite-class maximal inequality give $\E\sup_h|L_P(h)-L_S(h)|\leq\sqrt{2\log(2N)/n}$. Empirical risk minimization has excess at most twice this supremum. In the realizable case, a union bound gives $\Pp(L_P(\widehat h)>t)\leq N e^{-nt}$. Integrating the minimum of this bound and one gives $(\log N+1)/n$.
+\end{proof}
+
+\begin{lemma}[Two-category lower bounds]
+\label{lem:two-category}
+For any class containing two hypotheses that differ at one input, its expected agnostic and uniform-convergence curves are at least $c/\sqrt n$ for a universal $c>0$.
+\end{lemma}
+
+\begin{proof}
+Fix an input where the two labels differ. For agnostic learning, put probabilities $1/2+\alpha$ and $1/2-\alpha$ on the two labels and compare this law with the law that swaps them. The best hypothesis predicts the more likely label. Any output that does not predict that label has excess at least $2\alpha$. The $n$-sample KL divergence is at most $16n\alpha^2$ for $\alpha\leq1/4$. Le Cam's inequality with $\alpha=1/(8\sqrt n)$ proves the claim, including for improper learners. For uniform convergence, use equal label probabilities. The empirical loss of either hypothesis has expected absolute deviation of order $n^{-1/2}$ by the standard symmetric-binomial bound.
+\end{proof}
+
+We also use two standard online facts \citep{cesabianchi2006}. Euclidean online gradient ascent over a set of diameter $D$ with gain vectors of norm at most one has regret at most $D\sqrt T$. Hedge over $N$ experts has regret at most $\sqrt{2T\log N}$. Both bounds are in expectation when predictions are sampled from the maintained distribution.
+
+\section{Proofs for the Structural Dichotomy}
+\label{app:dimensions}
+
+\subsection{Collision-free classes}
+
+\begin{lemma}[Everywhere disagreement]
+\label{lem:everywhere}
+If $\C$ is collision-free, every two distinct hypotheses in $\C^r$ disagree at every input in $\mathcal X^r$.
+\end{lemma}
+
+\begin{proof}
+Let $h_s\neq h_t$. Their index vectors differ in some coordinate $j$. Collision-freeness gives $c_{s_j}(x_j)\neq c_{t_j}(x_j)$ for every $x_j$. Therefore $h_s(x)\neq h_t(x)$ for every product input $x$.
+\end{proof}
+
+\begin{lemma}[Dimensions of an everywhere-disagreeing class]
+\label{lem:everywhere-dim}
+Let $\mathcal H$ be a nontrivial class in which distinct hypotheses disagree at every input. Then
+\[
+ \Ndim(\mathcal H)=\Gdim(\mathcal H)=\DSdim(\mathcal H)=\Ldim(\mathcal H)=1.
+\]
+\end{lemma}
+
+\begin{proof}
+Each dimension is at least one because the class is nontrivial. Natarajan shattering of two points would provide two hypotheses that choose different witness labels at one point and the same witness label at the other. Graph shattering of two points has the same consequence by comparing the all-agree subset with a subset missing one point. A two-dimensional pseudo-cube contains a hypothesis and a neighbor that changes the first coordinate while preserving the second. These pairs contradict everywhere disagreement.
+
+Finally, a depth-two multiclass Littlestone tree has a depth-one subtree below one root label. At least two hypotheses realize its two branches and agree on the root label. This again contradicts everywhere disagreement.
+\end{proof}
+
+Lemmas~\ref{lem:everywhere} and \ref{lem:everywhere-dim} prove the first part of Theorem 1 in the main paper.
+
+\subsection{The collision cube}
+
+Suppose $c_0\neq c_1$ collide at $a$ and differ at $b$. Let $u_j$ have $b$ in coordinate $j$ and $a$ elsewhere. For $\theta\in\{0,1\}^r$, let $h_\theta$ use $c_{\theta_j}$ in coordinate $j$. Define $y_j^s=h_\theta(u_j)$ for any $\theta$ with $\theta_j=s$. This is well defined because every coordinate $k\neq j$ is evaluated at $a$, where $c_0$ and $c_1$ agree. Also $y_j^0\neq y_j^1$.
+
+\begin{lemma}[Addressable cube]
+\label{lem:cube}
+For every $\theta\in\{0,1\}^r$ and $j\in[r]$, $h_\theta(u_j)=y_j^{\theta_j}$. Consequently, $\{u_1,\ldots,u_r\}$ is Natarajan, graph, and DS shattered by $\C^r$, and $\C^r$ shatters a depth-$r$ Littlestone tree.
+\end{lemma}
+
+\begin{proof}
+The first statement follows from the construction. The two witness labels $y_j^0,y_j^1$ and the $2^r$ hypotheses $h_\theta$ give Natarajan shattering. Natarajan shattering implies graph and DS shattering. For Littlestone shattering, put $u_j$ at every node of level $j$ and label its two outgoing edges by $y_j^0,y_j^1$. The hypothesis indexed by a path $\theta$ realizes that path.
+\end{proof}
+
+\begin{lemma}[Cardinality bounds]
+\label{lem:cardinality-dim}
+If a finite class $\mathcal H$ has $N$ elements, each of its Natarajan, graph, DS, and Littlestone dimensions is at most $\log_2N$.
+\end{lemma}
+
+\begin{proof}
+Natarajan or graph shattering of $d$ points requires $2^d$ distinct restrictions. A depth-$d$ Littlestone tree has $2^d$ paths, and hypotheses realizing paths that diverge must be distinct.
+
+For DS dimension, it suffices to show that every $d$-dimensional pseudo-cube has at least $2^d$ members. We argue by induction. The claim is immediate for $d=0$. Partition a $d$-dimensional pseudo-cube by its first label. Every nonempty fiber is a $(d-1)$-dimensional pseudo-cube because neighbors in coordinates $2,\ldots,d$ stay in that fiber. There are at least two nonempty fibers because every member has a neighbor in coordinate one. Induction gives at least $2\cdot2^{d-1}$ members.
+\end{proof}
+
+Since $|\C^r|=M^r$, Lemmas~\ref{lem:cube} and \ref{lem:cardinality-dim} place all four dimensions between $r$ and $r\log_2M$.
+
+\subsection{Refined Natarajan and Littlestone bounds}
+
+Let $d=\Ndim(\C)$. The valid product inequalities of \citet{hanneke2024list} imply, by induction,
+\begin{equation}
+ r(d-2)+2\leq\Ndim(\C^r)\leq rd.
+ \label{eq:iterated-nat}
+\end{equation}
+When $d\geq3$, the lower bound in \eqref{eq:iterated-nat} is at least $rd/3$. When $d=1$, Lemma~\ref{lem:cube} gives $r=rd$. When $d=2$, it gives $r=rd/2$. Thus $rd/3\leq\Ndim(\C^r)\leq rd$ in every collision case.
+
+The lower Littlestone bound is Lemma~\ref{lem:cube}. For the upper bound, run one optimal realizable online learner for $\C$ in each coordinate. Predict the vector of their predictions. Every vector mistake contains at least one coordinate mistake, so the number of vector mistakes is at most the sum of coordinate mistakes, at most $r\Ldim(\C)$. The equivalence between optimal deterministic mistake complexity and multiclass Littlestone dimension proves $\Ldim(\C^r)\leq r\Ldim(\C)$. This completes Theorem 1.
+
+\section{The Claimed Additivity Lower Bound}
+\label{app:additivity}
+
+We give the counterexample and locate the failure in the prior proof. Let $\mathcal K_q=\{k_1,\ldots,k_q\}$, where $k_s(x)=s$ on a nonempty domain. Every evaluation map is injective, so Lemmas~\ref{lem:everywhere} and \ref{lem:everywhere-dim} give $\Ldim(\mathcal K_q^r)=1$ for all $r$. In particular,
+\[
+ \Ldim(\mathcal K_2\otimes\mathcal K_2)=1
+ \neq2=\Ldim(\mathcal K_2)+\Ldim(\mathcal K_2).
+\]
+
+The proof of Proposition 39 in \citet{hanneke2024list} attempts to concatenate a tree for $\mathcal G$ below every leaf of a tree for $\mathcal F$. During the first stage, its instance is $(x,z_0)$, where $z_0$ is the root of the future $\mathcal G$ tree. An edge label is therefore a pair $(f(x),g(z_0))$. Different future branches of the $\mathcal G$ tree require different values of $g(z_0)$. They do not share the edge label needed to reach the same first-stage node. The proposed product tree is consequently not shattered. The independent-learner argument in the same proof establishes only the valid upper bound
+\[
+ \Ldim(\mathcal F\otimes\mathcal G)
+ \leq\Ldim(\mathcal F)+\Ldim(\mathcal G).
+\]
+
+\section{Proofs for Batch Learning}
+\label{app:batch}
+
+\subsection{Collision-free branch}
+
+For $z=(x,y)$, define $q(z)=s\in[M]^r$ if $h_s(x)=y$, and define $q(z)=\bot$ when no such index exists. Collision-freeness makes $s$ unique. For every $b$,
+\[
+ \ell(h_b,z)=\mathbf1\{q(z)\neq b\}.
+\]
+Let $p_b=\Pp(q(Z)=b)$ and $\widehat p_b=n^{-1}\sum_{i=1}^n\mathbf1\{q(Z_i)=b\}$. An empirical mode $\widehat b$ is an ERM, while a population mode $b^*$ minimizes risk. Therefore
+\begin{align*}
+ L_P(h_{\widehat b})-L_P(\C^r)
+ &=p_{b^*}-p_{\widehat b}\\
+ &\leq(p_{b^*}-\widehat p_{b^*})+(\widehat p_{\widehat b}-p_{\widehat b})\\
+ &\leq2\|\widehat p-p\|_\infty
+ \leq2\|\widehat p-p\|_2.
+\end{align*}
+The vector $p$ can be a subprobability vector because of the invalid outcome $\bot$. Still,
+\[
+ \E\|\widehat p-p\|_2^2
+ =\frac1n\sum_b p_b(1-p_b)\leq\frac1n.
+\]
+Jensen's inequality gives the agnostic upper bound $2/\sqrt n$.
+
+Also $L_P(h_b)=1-p_b$ and $L_S(h_b)=1-\widehat p_b$, so
+\[
+ \E\sup_b|L_P(h_b)-L_S(h_b)|
+ =\E\|\widehat p-p\|_\infty\leq\frac1{\sqrt n}.
+\]
+Under realizability by $h_b$, every sample satisfies $q(Z)=b$. One sample therefore identifies $b$ and gives zero risk. Lemma~\ref{lem:two-category} gives both lower bounds.
+
+\subsection{Collision lower bounds}
+
+Use the cube notation from Lemma~\ref{lem:cube}. For $\theta\in\{-1,+1\}^r$ and $0<\alpha\leq1/4$, define $P_\theta$ by drawing $J$ uniformly from $[r]$, setting $X=u_J$, and conditionally setting
+\[
+ Y=y_J^{(1+\theta_J)/2}\quad\text{with probability }\frac12+\alpha,
+\]
+with the other cube label having probability $1/2-\alpha$. The product hypothesis indexed by $\theta$ predicts the more likely label at every $u_j$, so $L_{P_\theta}(\C^r)=1/2-\alpha$.
+
+From the output of an arbitrary learner define $\widehat\theta_j=+1$ if its prediction at $u_j$ is $y_j^1$, and $\widehat\theta_j=-1$ otherwise. Whenever $\widehat\theta_j\neq\theta_j$, its conditional excess at $u_j$ is at least $2\alpha$. Hence
+\begin{equation}
+ L_{P_\theta}(A(S))-L_{P_\theta}(\C^r)
+ \geq\frac{2\alpha}{r}d_H(\widehat\theta,\theta).
+ \label{eq:excess-hamming}
+\end{equation}
+
+If $\theta^{(j)}$ flips bit $j$, the one-sample laws differ only when $J=j$. Using $\operatorname{kl}(1/2+\alpha,1/2-\alpha)\leq16\alpha^2$ gives
+\[
+ \operatorname{KL}(P_\theta^n,P_{\theta^{(j)}}^n)\leq\frac{16n\alpha^2}{r}.
+\]
+Set $\alpha=(1/16)(1\wedge\sqrt{r/n})$. Pinsker's inequality makes every neighboring total variation distance less than $1/4$. Assouad's lemma yields
+\[
+ \sup_\theta\E_\theta d_H(\widehat\theta,\theta)\geq\frac{3r}{8}.
+\]
+Combining with \eqref{eq:excess-hamming} gives at least $(3/64)(1\wedge\sqrt{r/n})$ agnostic excess.
+
+For realizable learning, draw a target $\Theta$ uniformly from $\{0,1\}^r$. Give each $u_j$ probability $p$ and give the all-anchor point $u_0=(a,\ldots,a)$ probability $1-rp$. Labels are generated by $h_\Theta$. If $u_j$ is absent from the sample, all observations are independent of $\Theta_j$. At a test occurrence of $u_j$, every learner therefore errs with prior probability at least $1/2$. Averaging gives
+\[
+ \inf_A\E L_P(A(S))\geq\frac{rp}{2}(1-p)^n.
+\]
+Take $p=\min\{1/(2n),1/(2r)\}$. Then $rp\leq1/2$ and $(1-p)^n\geq1/2$, so the lower bound is at least $(1/8)(1\wedge r/n)$.
+
+For uniform convergence, fix label $y_j^0$ at each $u_j$ and use the uniform distribution on these $r$ labeled points. The restricted loss vectors of $h_\theta$ are all subsets of $[r]$. The expected supremum of empirical deviations is the expected total variation distance between an empirical distribution and the uniform law on $r$ atoms, which is at least $c(1\wedge\sqrt{r/n})$. This standard multinomial bound follows by summing absolute binomial deviations when $n\geq r$, and by the expected missing mass when $n<r$. Lemma~\ref{lem:two-category} covers $r=1$ directly.
+
+Finally, apply Lemma~\ref{lem:finite} with $N=M^r$. This proves every upper bound in the collision branch and completes Theorem 2.
+
+\section{Heterogeneous Products}
+\label{app:heterogeneous}
+
+We prove Theorem 7 in the main paper. Let $A=[r]\setminus I$ index the collision-free factors. Write
+\[
+ \mathcal A=\bigotimes_{j\in A}\C_j,
+ \qquad
+ \mathcal B=\bigotimes_{j\in I}\C_j,
+\]
+with a singleton empty product when one index set is empty. Distinct hypotheses in $\mathcal A$ disagree at every input. Indeed, if their index vectors differ, they differ in at least one collision-free coordinate, and the corresponding base hypotheses disagree at every point.
+
+\subsection{Statistical upper bounds}
+
+The free block has a partial decoder $q_A$. Given a labeled free-block observation $z_A=(x_A,y_A)$, it returns the unique $a\in\mathcal A$ such that $a(x_A)=y_A$, if one exists, and returns $\bot$ otherwise. For $(a,b)\in\mathcal A\otimes\mathcal B$, its full-vector correct-prediction indicator is
+\begin{equation}
+ f_{a,b}(z)=\mathbf1\{q_A(z_A)=a\}\mathbf1\{b(x_B)=y_B\}.
+ \label{eq:supp-grouped-correct}
+\end{equation}
+
+Fix a sample $z_1,\ldots,z_n$. For each $a$, let $I_a=\{i:q_A(z_{i,A})=a\}$. These sets are disjoint and their total size is at most $n$. Conditional on the sample and independent Rademacher signs $\sigma_1,\ldots,\sigma_n$, put
+\[
+ Z_a=\max_{b\in\mathcal B}
+ \left|\sum_{i\in I_a}\sigma_i
+ \mathbf1\{b(x_{i,B})=y_{i,B}\}\right|.
+\]
+For fixed $a$ and $b$, the signed sum is subgaussian with variance proxy at most $|I_a|$. The maximal inequality for $2B$ signed vectors therefore gives
+\begin{equation}
+ \E_\sigma Z_a^2\leq C_0|I_a|\log(2B)
+ \label{eq:maximal-second-moment}
+\end{equation}
+for a universal $C_0$. This also follows directly by integrating the union-bound tail
+\[
+ \Pr_\sigma\{Z_a\geq t\}
+ \leq 2B\exp\left(-\frac{t^2}{2|I_a|}\right).
+\]
+Since the supremum of the signed sums in \eqref{eq:supp-grouped-correct} is at most $\max_a Z_a$, Jensen's inequality and \eqref{eq:maximal-second-moment} give
+\begin{align*}
+ \E_\sigma\sup_{a,b}
+ \left|\sum_{i=1}^n\sigma_i f_{a,b}(z_i)\right|
+ &\leq \E_\sigma\left(\sum_a Z_a^2\right)^{1/2}\\
+ &\leq\left(\sum_a\E_\sigma Z_a^2\right)^{1/2}\\
+ &\leq\sqrt{C_0n\log(2B)}.
+\end{align*}
+Standard symmetrization now yields expected uniform deviation at most $C\sqrt{\log(2B)/n}$. Loss is one minus the correct-prediction indicator, so the same bound applies to losses. Empirical risk minimization has expected agnostic excess at most twice this deviation.
+
+Suppose next that the distribution is realizable by $(a^*,b^*)$. Every observation satisfies $q_A(Z_A)=a^*$, so one sample identifies the complete free component. After that decoding, choose any $b\in\mathcal B$ consistent with the sample. The usual finite realizable-class argument gives expected risk at most
+\[
+ \inf_{\eta>0}\left(\eta+B e^{-n\eta}\right)
+ \leq \frac{\log B+1}{n}.
+\]
+Truncating all upper bounds at one proves the statistical upper bounds. If $I$ is empty, equation~\eqref{eq:supp-grouped-correct} reduces to the mode-estimation problem in Appendix~\ref{app:batch}, including zero realizable risk after one observation.
+
+\subsection{Statistical lower bounds}
+
+For every $j\in I$, choose distinct $c_j^0,c_j^1\in\C_j$ and points $a_j,b_j$ such that $c_j^0(a_j)=c_j^1(a_j)$ and $c_j^0(b_j)\neq c_j^1(b_j)$. Fix arbitrary hypotheses in the free factors. For each $j\in I$, evaluate factor $j$ at $b_j$ and every other colliding factor at its anchor. The resulting $s$ inputs and $2^s$ hypotheses form the collision cube of Lemma~\ref{lem:cube}. The agnostic, uniform-convergence, and realizable constructions in Appendix~\ref{app:batch} apply verbatim with $s$ in place of $r$. This proves all lower bounds.
+
+\subsection{Exact dimension removal}
+
+Fixing the free component shows
+\begin{align*}
+ \Ndim(\mathcal H)&\geq\Ndim(\mathcal H_I),\\
+ \DSdim(\mathcal H)&\geq\DSdim(\mathcal H_I).
+\end{align*}
+The full product is nontrivial, so both dimensions are at least one.
+
+For the reverse Natarajan inequality, suppose $d\geq2$ points are Natarajan-shattered by $\mathcal H$. For every vertex of the binary witness cube, select one realizing hypothesis. Hypotheses at adjacent vertices agree on $d-1\geq1$ witness points. They must have the same free component because distinct members of $\mathcal A$ disagree everywhere. The binary cube is connected, so all selected hypotheses have one common free component. No two witness points can have the same colliding-block projection. Otherwise, the common free component and a single colliding-block value could not realize all four assignments to those two witness coordinates. The colliding components therefore Natarajan-shatter the $d$ distinct projected points. Hence $d\leq\Ndim(\mathcal H_I)$.
+
+Now let a $d\geq2$ dimensional DS pseudo-cube be realized by restrictions of hypotheses in $\mathcal H$. Join two restrictions when they are neighbors in one coordinate. Every vertex has a neighbor in every coordinate by the pseudo-cube property. Along each edge, the two realizing hypotheses agree on $d-1\geq1$ points and therefore have the same free component. Restrict to any connected component of this neighbor graph. It still has a neighbor in every coordinate at every vertex, so it remains a $d$-dimensional pseudo-cube, and all of its hypotheses have the same free component. Its witness points have distinct colliding-block projections. If two projections coincided, changing one corresponding coordinate while fixing the other would be impossible. Projection therefore gives a $d$-dimensional pseudo-cube for $\mathcal H_I$. Thus $d\leq\DSdim(\mathcal H_I)$. The case $d=1$ is covered by nontriviality, which proves
+\begin{align*}
+ \Ndim(\mathcal H)&=1\vee\Ndim(\mathcal H_I),\\
+ \DSdim(\mathcal H)&=1\vee\DSdim(\mathcal H_I).
+\end{align*}
+
+\section{Proofs for Online Learning}
+\label{app:online}
+
+\subsection{Collision-free regret}
+
+Let $\Delta$ be the probability simplex over $[M]^r$. Maintain $w_t\in\Delta$ by Euclidean online gradient ascent. After seeing $x_t$, sample $B_t\sim w_t$ and predict $h_{B_t}(x_t)$. Once $y_t$ is revealed, compute $q_t=q(x_t,y_t)$. If $q_t=\bot$, every product hypothesis and the learner lose one, so the round contributes zero regret and we use the zero gain vector. Otherwise, use gain $g_t=e_{q_t}$. The learner's expected correct-prediction gain is $\langle w_t,g_t\rangle$, and hypothesis $h_b$ gains $\langle e_b,g_t\rangle$. The simplex has Euclidean diameter at most $\sqrt2$ and $\|g_t\|_2\leq1$, so online gradient ascent gives regret at most $\sqrt{2T}$.
+
+For the lower bound, restrict outcomes at a fixed input to the labels of two product hypotheses, each chosen by an independent fair coin. Every online learner has expected loss $T/2$. The better constant label has loss $T/2-|N_0-T/2|$, whose expected advantage is at least $c\sqrt T$ by the symmetric random-walk bound.
+
+\subsection{Collision regret}
+
+Let $r'=\min\{r,T\}$. Assign the $T$ rounds as evenly as possible among collision inputs $u_1,\ldots,u_{r'}$. At each occurrence of $u_j$, choose $y_j^0$ or $y_j^1$ by an independent fair coin. The learner's expected loss is at least $T/2$. The best product hypothesis chooses the majority label separately for every coordinate. If coordinate $j$ appears $m_j$ times, its expected advantage is at least $c\sqrt{m_j}$ when $m_j\geq2$, and is $1/2$ when $m_j=1$. Since the counts differ by at most one,
+\[
+ \E[\text{regret}]\geq c\sum_{j=1}^{r'}\sqrt{m_j}
+ \geq c'\sqrt{r'T}
+ =c'\bigl(T\wedge\sqrt{rT}\bigr).
+\]
+Hedge over $M^r$ hypotheses gives regret at most $\sqrt{2Tr\log M}$, and the trivial upper bound is $T$.
+
+For realizable online learning, the depth-$r$ tree in Lemma~\ref{lem:cube} forces $r$ mistakes. Running an optimal base learner in every coordinate gives at most $r\Ldim(\C)$ vector mistakes, as shown in Appendix~\ref{app:dimensions}. The collision-free mistake statement follows from Lemma~\ref{lem:everywhere-dim}. This proves Theorem 3.
+
+\bibliography{references}
+\end{document}
