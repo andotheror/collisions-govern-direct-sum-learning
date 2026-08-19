@@ -47,8 +47,7 @@ This paper shows that one local property explains the entire finite-class landsc
 \caption{Minimax orders for a fixed finite class $\C$ with $|\C|\geq2$. Constants may depend on $\C$.}
 \label{tab:dichotomy}
 \centering
-\small
-\setlength{\tabcolsep}{3.2pt}
+\small \setlength{\tabcolsep}{3.2pt}
 \begin{tabular}{p{0.34\columnwidth}p{0.26\columnwidth}p{0.29\columnwidth}}
 \toprule
 Quantity & Collision-free & Has a collision \\
@@ -89,20 +88,9 @@ and give lower bounds for DS dimensions. Their Natarajan inequalities are valid 
 \section{Setup}
 \label{sec:setup}
 
-Let $\C=\{c_1,\ldots,c_M\}\subseteq\mathcal Y^{\mathcal X}$ be a finite class of distinct functions on a nonempty domain, where $M\geq2$. Its $r$th Cartesian power is
-\[
- \C^r=\{c_{b_1}\otimes\cdots\otimes c_{b_r}:b\in[M]^r\}\subseteq(\mathcal Y^r)^{\mathcal X^r},
-\]
-where $h_b(x_1,\ldots,x_r)=(c_{b_1}(x_1),\ldots,c_{b_r}(x_r))$. The loss is $\ell(h,(x,y))=\mathbf1\{h(x)\neq y\}$, where inequality means that at least one coordinate differs.
+Let $\C=\{c_1,\ldots,c_M\}\subseteq\mathcal Y^{\mathcal X}$ be a finite class of distinct functions on a nonempty domain, where $M\geq2$. Its $r$th Cartesian power is \[ \C^r=\{c_{b_1}\otimes\cdots\otimes c_{b_r}:b\in[M]^r\}\subseteq(\mathcal Y^r)^{\mathcal X^r}, \] where $h_b(x_1,\ldots,x_r)=(c_{b_1}(x_1),\ldots,c_{b_r}(x_r))$. The loss is $\ell(h,(x,y))=\mathbf1\{h(x)\neq y\}$, where inequality means that at least one coordinate differs.
 
-For a distribution $P$ on $\mathcal X^r\times\mathcal Y^r$, write $L_P(h)=\E_P\ell(h,Z)$ and $L_P(\C^r)=\min_{h\in\C^r}L_P(h)$. The expected agnostic curve is
-\[
- \epsilon_{\rm agn}(n\mid\C^r)=\inf_A\sup_P \E\bigl[L_P(A(S))-L_P(\C^r)\bigr],
-\]
-where $S\sim P^n$ and $A$ may be improper. The realizable curve $\epsilon_{\rm real}$ restricts the supremum to distributions labeled by some member of $\C^r$ and omits the zero comparator term. The uniform-convergence curve is
-\[
- \epsilon_{\rm UC}(n\mid\C^r)=\sup_P\E\sup_{h\in\C^r}|L_P(h)-L_S(h)|.
-\]
+For a distribution $P$ on $\mathcal X^r\times\mathcal Y^r$, write $L_P(h)=\E_P\ell(h,Z)$ and $L_P(\C^r)=\min_{h\in\C^r}L_P(h)$. The expected agnostic curve is \[ \epsilon_{\rm agn}(n\mid\C^r)=\inf_A\sup_P \E\bigl[L_P(A(S))-L_P(\C^r)\bigr], \] where $S\sim P^n$ and $A$ may be improper. The realizable curve $\epsilon_{\rm real}$ restricts the supremum to distributions labeled by some member of $\C^r$ and omits the zero comparator term. The uniform-convergence curve is \[ \epsilon_{\rm UC}(n\mid\C^r)=\sup_P\E\sup_{h\in\C^r}|L_P(h)-L_S(h)|. \]
 
 In the online model, an adversary presents $x_t$, the learner predicts $\widehat y_t$, and then $y_t$ is revealed. The minimax expected regret is denoted $\Risk_T(\C^r)$ and compares cumulative zero-one loss with the best fixed member of $\C^r$. The realizable mistake complexity equals the multiclass Littlestone dimension under the standard full-label protocol \citep{daniely2015}.
 
@@ -154,11 +142,7 @@ Now suppose a collision exists. For each $\theta\in\{0,1\}^r$, let $h_\theta$ ch
 
 Each Natarajan-shattered set, graph-shattered set, or depth-$d$ Littlestone tree needs at least $2^d$ hypotheses. The same is true of a $d$-dimensional DS pseudo-cube. To see this, partition it by its first label. Every nonempty fiber is a $(d-1)$-dimensional pseudo-cube, and the neighbor condition in coordinate one guarantees at least two fibers. Induction gives at least $2^d$ members. Since $|\C^r|=M^r$, every dimension is at most $r\log_2M$.
 
-Let $d=\Ndim(\C)$. Iterating the valid product inequalities of \citet{hanneke2024list} gives
-\[
- r(d-2)+2\leq\Ndim(\C^r)\leq rd.
-\]
-For $d\geq3$, the lower bound is at least $rd/3$. For $d=1$ or $2$, the collision cube gives $r\geq rd/2$. Finally, run an optimal online learner for $\C$ in every coordinate. Every vector mistake contains a coordinate mistake, so there are at most $r\Ldim(\C)$ mistakes. The mistake-bound characterization of Littlestone dimension completes the proof.
+Let $d=\Ndim(\C)$. Iterating the valid product inequalities of \citet{hanneke2024list} gives \[ r(d-2)+2\leq\Ndim(\C^r)\leq rd. \] For $d\geq3$, the lower bound is at least $rd/3$. For $d=1$ or $2$, the collision cube gives $r\geq rd/2$. Finally, run an optimal online learner for $\C$ in every coordinate. Every vector mistake contains a coordinate mistake, so there are at most $r\Ldim(\C)$ mistakes. The mistake-bound characterization of Littlestone dimension completes the proof.
 \end{proof}
 
 \begin{corollary}[Failure of Littlestone additivity]
@@ -221,11 +205,7 @@ For the collision lower bound, the cube \eqref{eq:collision-cube} turns the prob
 \end{equation}
 Flipping coordinate $j$ changes only observations with $J=j$. The neighboring $n$-sample laws therefore have KL divergence at most $16n\alpha^2/r$. With $\alpha=(1/16)(1\wedge\sqrt{r/n})$, Pinsker's inequality bounds every neighboring total variation distance by $1/4$. Assouad's lemma \citep{tsybakov2009} gives $\sup_\theta\E d_H(\widehat\theta,\theta)\geq3r/8$. Substitution in \eqref{eq:main-hamming} proves the agnostic lower bound for every learner, including improper learners.
 
-The realizable lower bound uses the same inputs. Put probability $p$ on each $u_j$, the remaining mass on the all-anchor input, and a uniform prior on the target cube vertex. Observations at $u_k$ for $k\neq j$ evaluate coordinate $j$ at the agreement point, so they reveal nothing about bit $j$. An unseen $u_j$ therefore leaves that bit uniformly unknown. The Bayes test error is at least
-\[
- \frac{rp}{2}(1-p)^n.
-\]
-Choosing $p=\min\{1/(2n),1/(2r)\}$ gives $(1/8)(1\wedge r/n)$. For uniform convergence, fix the negative cube label at each $u_j$ and use the uniform law on those $r$ labeled points. The restricted loss vectors are every subset of $[r]$. The expected supremum is the expected total variation distance between the empirical distribution and the uniform law on $r$ atoms, which is $\Omega(1\wedge\sqrt{r/n})$. Standard finite-class upper bounds \citep{devroye1996} with $|\C^r|=M^r$ complete the proof. Appendix D of the supplement gives the remaining constants.
+The realizable lower bound uses the same inputs. Put probability $p$ on each $u_j$, the remaining mass on the all-anchor input, and a uniform prior on the target cube vertex. Observations at $u_k$ for $k\neq j$ evaluate coordinate $j$ at the agreement point, so they reveal nothing about bit $j$. An unseen $u_j$ therefore leaves that bit uniformly unknown. The Bayes test error is at least \[ \frac{rp}{2}(1-p)^n. \] Choosing $p=\min\{1/(2n),1/(2r)\}$ gives $(1/8)(1\wedge r/n)$. For uniform convergence, fix the negative cube label at each $u_j$ and use the uniform law on those $r$ labeled points. The restricted loss vectors are every subset of $[r]$. The expected supremum is the expected total variation distance between the empirical distribution and the uniform law on $r$ atoms, which is $\Omega(1\wedge\sqrt{r/n})$. Standard finite-class upper bounds \citep{devroye1996} with $|\C^r|=M^r$ complete the proof. Appendix D of the supplement gives the remaining constants.
 
 Theorem~\ref{thm:batch} classifies every fixed finite class. In particular, the constant and zero-identity examples of \citet{more2026} are not isolated constructions. They are the two unavoidable branches.
 
@@ -237,12 +217,7 @@ Every fixed finite nontrivial class has one-task agnostic and uniform-convergenc
 \section{Heterogeneous Products}
 \label{sec:heterogeneous}
 
-The mechanism extends beyond powers. Let $\C_1,\ldots,\C_r$ be finite nontrivial classes, with $M_j=|\C_j|$. Let $I$ index the factors that have a collision, set $s=|I|$, and define $B=\prod_{j\in I}M_j$, with $B=1$ when $I$ is empty. Write
-\[
- \mathcal H=\bigotimes_{j=1}^r\C_j,
- \qquad
- \mathcal H_I=\bigotimes_{j\in I}\C_j.
-\]
+The mechanism extends beyond powers. Let $\C_1,\ldots,\C_r$ be finite nontrivial classes, with $M_j=|\C_j|$. Let $I$ index the factors that have a collision, set $s=|I|$, and define $B=\prod_{j\in I}M_j$, with $B=1$ when $I$ is empty. Write \[ \mathcal H=\bigotimes_{j=1}^r\C_j, \qquad \mathcal H_I=\bigotimes_{j\in I}\C_j. \]
 
 \begin{theorem}[Collision count]
 \label{thm:heterogeneous}
@@ -276,17 +251,7 @@ If the colliding factors have uniformly bounded cardinality, then $\log B=\Theta
  \{q_A(z_A)=a\}\cap\{h_b(z_B)=y_B\}.
  \label{eq:grouped-correct}
 \end{equation}
-These event classes occupy disjoint groups indexed by $a$. On a fixed sample, let $I_a$ be the observations in group $a$. For Rademacher signs $\sigma_i$, define
-\[
- Z_a=\max_{b\in[B]}
- \left|\sum_{i\in I_a}\sigma_i
- \mathbf1\{h_b(x_{i,B})=y_{i,B}\}\right|.
-\]
-The finite-class maximal inequality and its subgaussian tail give $\E_\sigma Z_a^2\leq C|I_a|\log(2B)$. Since $\max_aZ_a\leq(\sum_aZ_a^2)^{1/2}$ and the groups partition at most $n$ observations,
-\[
- \E_\sigma\max_a Z_a\leq C\sqrt{n\log(2B)}.
-\]
-Symmetrization of \eqref{eq:grouped-correct} proves the agnostic and uniform upper bounds without a term for the number of free factors. In the realizable case, one example decodes all free target indices. A consistent learner then pays only $(\log B+1)/n$ for the colliding block. Choosing one witness pair in every colliding factor gives the $s$-bit version of \eqref{eq:collision-cube}, so the earlier lower bounds apply with $s$ in place of $r$.
+These event classes occupy disjoint groups indexed by $a$. On a fixed sample, let $I_a$ be the observations in group $a$. For Rademacher signs $\sigma_i$, define \[ Z_a=\max_{b\in[B]} \left|\sum_{i\in I_a}\sigma_i \mathbf1\{h_b(x_{i,B})=y_{i,B}\}\right|. \] The finite-class maximal inequality and its subgaussian tail give $\E_\sigma Z_a^2\leq C|I_a|\log(2B)$. Since $\max_aZ_a\leq(\sum_aZ_a^2)^{1/2}$ and the groups partition at most $n$ observations, \[ \E_\sigma\max_a Z_a\leq C\sqrt{n\log(2B)}. \] Symmetrization of \eqref{eq:grouped-correct} proves the agnostic and uniform upper bounds without a term for the number of free factors. In the realizable case, one example decodes all free target indices. A consistent learner then pays only $(\log B+1)/n$ for the colliding block. Choosing one witness pair in every colliding factor gives the $s$-bit version of \eqref{eq:collision-cube}, so the earlier lower bounds apply with $s$ in place of $r$.
 
 \paragraph{Dimension proof.} The lower bound follows by fixing all free factors. For the reverse direction, consider a Natarajan-shattered set of size at least two. Hypotheses at adjacent vertices of its binary witness cube agree on at least one input. Their free components must be identical because distinct hypotheses in $\mathcal A$ disagree everywhere. Connectivity forces the same free component throughout the cube, leaving a Natarajan cube in $\mathcal H_I$. The DS argument is identical after restricting to a connected component of the pseudo-cube. Dimension one follows from nontriviality. Full details are in Appendix E of the supplement.
 
@@ -300,17 +265,9 @@ The same local property controls adversarial sequences.
 There are universal constants $c,C>0$ such that, for all $T,r\geq1$:
 \begin{enumerate}
 \item If $\C$ is collision-free, then
-\[
- c\sqrt T\leq\Risk_T(\C^r)\leq\sqrt{2T},
- \qquad \Ldim(\C^r)=1.
-\]
+\[ c\sqrt T\leq\Risk_T(\C^r)\leq\sqrt{2T}, \qquad \Ldim(\C^r)=1. \]
 \item If $\C$ has a collision, then
-\[
- c\bigl(T\wedge\sqrt{rT}\bigr)
- \leq\Risk_T(\C^r)
- \leq C\bigl(T\wedge\sqrt{Tr\log(2M)}\bigr),
-\]
-and $r\leq\Ldim(\C^r)\leq r\Ldim(\C)$.
+\[ c\bigl(T\wedge\sqrt{rT}\bigr) \leq\Risk_T(\C^r) \leq C\bigl(T\wedge\sqrt{Tr\log(2M)}\bigr), \] and $r\leq\Ldim(\C^r)\leq r\Ldim(\C)$.
 \end{enumerate}
 \end{theorem}
 
@@ -318,11 +275,7 @@ In the collision-free branch, valid outcomes decode to one index $q_t\in[M]^r$. 
 
 For the collision branch, interleave $r'=\min\{r,T\}$ binary constant-prediction games on $u_1,\ldots,u_{r'}$. Independent fair labels give expected comparator advantage of order $r'\sqrt{T/r'}=T\wedge\sqrt{rT}$. Hedge over the $M^r$ product hypotheses gives the upper bound. The realizable mistake bounds follow from the collision tree and from running one optimal base learner per coordinate. See Appendix F of the supplement.
 
-The correction in Corollary~\ref{cor:littlestone} matters beyond a single example. The valid relation for arbitrary classes is the additive upper bound
-\[
- \Ldim(\mathcal F\otimes\mathcal G)\leq\Ldim(\mathcal F)+\Ldim(\mathcal G).
-\]
-No matching additive lower bound is possible. For finite powers, Theorem~\ref{thm:online} replaces it with an exact qualitative classification and tight orders in $r$.
+The correction in Corollary~\ref{cor:littlestone} matters beyond a single example. The valid relation for arbitrary classes is the additive upper bound \[ \Ldim(\mathcal F\otimes\mathcal G)\leq\Ldim(\mathcal F)+\Ldim(\mathcal G). \] No matching additive lower bound is possible. For finite powers, Theorem~\ref{thm:online} replaces it with an exact qualitative classification and tight orders in $r$.
 
 \section{Discussion}
 
