@@ -18,8 +18,6 @@ direct-sum learning, multiclass learnability, Natarajan dimension, Littlestone d
 
 ## Files
 
-- `main.pdf`, `supplement.pdf`
-- `main.tex`, `supplement.tex`
-- `references.bib`
-- `aistats2027.sty`, `fancyhdr.sty`
-- `main.pdf.ots`, `supplement.pdf.ots`, `README.md.ots` OpenTimestamps priority proofs
+- `main_old_2026-08-11.pdf`, the paper as first published, with its OpenTimestamps proof `main_old_2026-08-11.pdf.ots`.
+- `supplement_old_2026-08-11.pdf`, the supplement as first published, with its OpenTimestamps proof `supplement_old_2026-08-11.pdf.ots`.
+- source: `aistats2027.sty`, `main.tex`, `references.bib`, `supplement.tex`.
